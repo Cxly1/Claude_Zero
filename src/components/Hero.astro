@@ -2,9 +2,9 @@
 // Hero section with scroll-driven animations
 ---
 
-<section class="hero" id="hero">
+<section class="hero" id="hero" data-loaded="false">
   <div class="hero-content container">
-    <div class="hero-badge" transition:name="badge">
+    <div class="hero-badge animated-element" transition:name="badge">
       <span class="badge-dot"></span>
       <span>The AI That Actually Understands</span>
     </div>
@@ -17,13 +17,13 @@
       <span class="line">to Claude</span>
     </h1>
     
-    <p class="hero-description" transition:name="description">
+    <p class="hero-description animated-element" transition:name="description">
       After years of using other AI assistants, I discovered Claude. 
       This site itself is proof of what Claude can create — built entirely 
       with cutting-edge web technologies in a single session.
     </p>
     
-    <div class="hero-cta">
+    <div class="hero-cta animated-element">
       <a href="#features" class="btn btn-primary">
         <span>Explore Features</span>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -35,7 +35,7 @@
       </a>
     </div>
     
-    <div class="hero-stats">
+    <div class="hero-stats animated-element">
       <div class="stat">
         <span class="stat-value">200K</span>
         <span class="stat-label">Context Window</span>
@@ -60,13 +60,36 @@
   </div>
   
   <!-- Scroll indicator -->
-  <div class="scroll-indicator" aria-hidden="true">
+  <div class="scroll-indicator animated-element" aria-hidden="true">
     <div class="mouse">
       <div class="wheel"></div>
     </div>
     <span>Scroll to explore</span>
   </div>
 </section>
+
+<script>
+  // Fallback: ensure all elements are visible after load
+  function initHero() {
+    const hero = document.getElementById('hero');
+    if (hero) {
+      // Small delay to let CSS animations start
+      setTimeout(() => {
+        hero.setAttribute('data-loaded', 'true');
+      }, 100);
+    }
+  }
+  
+  // Run on page load
+  if (document.readyState === 'complete') {
+    initHero();
+  } else {
+    window.addEventListener('load', initHero);
+  }
+  
+  // Re-run after View Transitions
+  document.addEventListener('astro:page-load', initHero);
+</script>
 
 <style>
   .hero {
@@ -379,5 +402,17 @@
       flex-direction: column;
       gap: var(--space-md);
     }
+  }
+  
+  /* Fallback: ensure visibility after page loads */
+  .hero[data-loaded="true"] .animated-element,
+  .hero[data-loaded="true"] .hero-title .line {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+  
+  /* Also ensure scroll indicator is visible */
+  .hero[data-loaded="true"] .scroll-indicator {
+    opacity: 1 !important;
   }
 </style>
