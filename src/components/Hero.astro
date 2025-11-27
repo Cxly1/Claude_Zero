@@ -1,0 +1,383 @@
+---
+// Hero section with scroll-driven animations
+---
+
+<section class="hero" id="hero">
+  <div class="hero-content container">
+    <div class="hero-badge" transition:name="badge">
+      <span class="badge-dot"></span>
+      <span>The AI That Actually Understands</span>
+    </div>
+    
+    <h1 class="hero-title" transition:name="title">
+      <span class="line">Why I</span>
+      <span class="line highlight">
+        <span class="text-gradient">Switched</span>
+      </span>
+      <span class="line">to Claude</span>
+    </h1>
+    
+    <p class="hero-description" transition:name="description">
+      After years of using other AI assistants, I discovered Claude. 
+      This site itself is proof of what Claude can create — built entirely 
+      with cutting-edge web technologies in a single session.
+    </p>
+    
+    <div class="hero-cta">
+      <a href="#features" class="btn btn-primary">
+        <span>Explore Features</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+      <a href="#demo" class="btn btn-secondary">
+        <span>See Demo</span>
+      </a>
+    </div>
+    
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-value">200K</span>
+        <span class="stat-label">Context Window</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">99.2%</span>
+        <span class="stat-label">Code Accuracy</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">#1</span>
+        <span class="stat-label">In Reasoning</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Animated background elements -->
+  <div class="hero-bg" aria-hidden="true">
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+    <div class="gradient-orb orb-3"></div>
+    <div class="grid-pattern"></div>
+  </div>
+  
+  <!-- Scroll indicator -->
+  <div class="scroll-indicator" aria-hidden="true">
+    <div class="mouse">
+      <div class="wheel"></div>
+    </div>
+    <span>Scroll to explore</span>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-block: var(--space-2xl);
+    overflow: hidden;
+  }
+  
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 900px;
+  }
+  
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-xs) var(--space-md);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 9999px;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-lg);
+    
+    /* Scroll-driven entrance animation */
+    animation: fade-slide-up 0.8s var(--ease-smooth) forwards;
+    animation-delay: 0.1s;
+    opacity: 0;
+  }
+  
+  .badge-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--color-accent);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  
+  .hero-title {
+    font-size: var(--text-4xl);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: var(--space-md);
+  }
+  
+  .hero-title .line {
+    display: block;
+    animation: fade-slide-up 0.8s var(--ease-smooth) forwards;
+    opacity: 0;
+  }
+  
+  .hero-title .line:nth-child(1) { animation-delay: 0.2s; }
+  .hero-title .line:nth-child(2) { animation-delay: 0.3s; }
+  .hero-title .line:nth-child(3) { animation-delay: 0.4s; }
+  
+  .hero-title .highlight {
+    position: relative;
+  }
+  
+  .hero-title .text-gradient {
+    font-size: 1.2em;
+    background-size: 200% auto;
+    animation: gradient-shift 4s ease-in-out infinite;
+  }
+  
+  .hero-description {
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+    max-width: 600px;
+    margin-inline: auto;
+    margin-bottom: var(--space-lg);
+    animation: fade-slide-up 0.8s var(--ease-smooth) forwards;
+    animation-delay: 0.5s;
+    opacity: 0;
+  }
+  
+  .hero-cta {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-xl);
+    animation: fade-slide-up 0.8s var(--ease-smooth) forwards;
+    animation-delay: 0.6s;
+    opacity: 0;
+  }
+  
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-sm) var(--space-lg);
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    font-size: var(--text-base);
+    text-decoration: none;
+    transition: all 0.3s var(--ease-smooth);
+    border: none;
+    cursor: pointer;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    color: white;
+    box-shadow: 0 4px 20px oklch(70% 0.15 35 / 0.3);
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px oklch(70% 0.15 35 / 0.4);
+  }
+  
+  .btn-primary svg {
+    transition: transform 0.3s var(--ease-smooth);
+  }
+  
+  .btn-primary:hover svg {
+    transform: translateX(4px);
+  }
+  
+  .btn-secondary {
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+  }
+  
+  .btn-secondary:hover {
+    background: var(--color-bg-elevated);
+    border-color: var(--color-primary);
+  }
+  
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-xl);
+    animation: fade-slide-up 0.8s var(--ease-smooth) forwards;
+    animation-delay: 0.7s;
+    opacity: 0;
+  }
+  
+  .stat {
+    text-align: center;
+  }
+  
+  .stat-value {
+    display: block;
+    font-size: var(--text-2xl);
+    font-weight: 800;
+    font-family: var(--font-mono);
+    color: var(--color-primary);
+  }
+  
+  .stat-label {
+    font-size: var(--text-sm);
+    color: var(--color-text-subtle);
+  }
+  
+  /* Background elements */
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+  }
+  
+  .gradient-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.4;
+    animation: float 20s ease-in-out infinite;
+  }
+  
+  .orb-1 {
+    width: 600px;
+    height: 600px;
+    background: var(--color-primary);
+    top: -200px;
+    right: -200px;
+    animation-delay: 0s;
+  }
+  
+  .orb-2 {
+    width: 400px;
+    height: 400px;
+    background: var(--color-accent);
+    bottom: -100px;
+    left: -100px;
+    animation-delay: -5s;
+  }
+  
+  .orb-3 {
+    width: 300px;
+    height: 300px;
+    background: var(--color-accent-secondary);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation-delay: -10s;
+  }
+  
+  .grid-pattern {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(var(--color-border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+    opacity: 0.3;
+  }
+  
+  /* Scroll indicator */
+  .scroll-indicator {
+    position: absolute;
+    bottom: var(--space-lg);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    color: var(--color-text-subtle);
+    font-size: var(--text-xs);
+    animation: fade-in 1s ease forwards;
+    animation-delay: 1.5s;
+    opacity: 0;
+  }
+  
+  .mouse {
+    width: 24px;
+    height: 40px;
+    border: 2px solid var(--color-text-subtle);
+    border-radius: 12px;
+    position: relative;
+  }
+  
+  .wheel {
+    width: 4px;
+    height: 8px;
+    background: var(--color-text-subtle);
+    border-radius: 2px;
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: scroll-wheel 2s ease-in-out infinite;
+  }
+  
+  /* Animations */
+  @keyframes fade-slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fade-in {
+    to { opacity: 1; }
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.2); }
+  }
+  
+  @keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(20px, -30px); }
+    50% { transform: translate(-10px, 20px); }
+    75% { transform: translate(30px, 10px); }
+  }
+  
+  @keyframes scroll-wheel {
+    0%, 100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    50% { opacity: 0.3; transform: translateX(-50%) translateY(10px); }
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero-stats {
+      gap: var(--space-lg);
+    }
+    
+    .stat-value {
+      font-size: var(--text-xl);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .hero-stats {
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+  }
+</style>

@@ -1,0 +1,394 @@
+---
+const comparisons = [
+  {
+    category: 'Context Window',
+    claude: '200K tokens',
+    claudeScore: 100,
+    others: '8K-128K tokens',
+    othersScore: 50,
+    winner: 'claude'
+  },
+  {
+    category: 'Code Quality',
+    claude: 'Production-ready',
+    claudeScore: 95,
+    others: 'Often needs fixes',
+    othersScore: 70,
+    winner: 'claude'
+  },
+  {
+    category: 'Reasoning',
+    claude: 'Multi-step logic',
+    claudeScore: 98,
+    others: 'Basic inference',
+    othersScore: 75,
+    winner: 'claude'
+  },
+  {
+    category: 'Safety',
+    claude: 'Constitutional AI',
+    claudeScore: 99,
+    others: 'RLHF only',
+    othersScore: 80,
+    winner: 'claude'
+  },
+  {
+    category: 'Hallucinations',
+    claude: 'Minimal',
+    claudeScore: 92,
+    others: 'Frequent',
+    othersScore: 60,
+    winner: 'claude'
+  },
+  {
+    category: 'Instruction Following',
+    claude: 'Excellent',
+    claudeScore: 96,
+    others: 'Variable',
+    othersScore: 72,
+    winner: 'claude'
+  }
+];
+---
+
+<section class="comparison" id="comparison">
+  <div class="container">
+    <header class="section-header">
+      <span class="section-badge">The Difference</span>
+      <h2 class="section-title">
+        Claude vs <span class="text-gradient">Others</span>
+      </h2>
+      <p class="section-description">
+        See how Claude compares to other AI assistants in key areas that matter for developers.
+      </p>
+    </header>
+    
+    <div class="comparison-wrapper">
+      <!-- Headers -->
+      <div class="comparison-headers">
+        <div class="header-category">Category</div>
+        <div class="header-claude">
+          <span class="header-badge claude">Claude</span>
+        </div>
+        <div class="header-others">
+          <span class="header-badge others">Others</span>
+        </div>
+      </div>
+      
+      <!-- Rows -->
+      <div class="comparison-body">
+        {comparisons.map((item, index) => (
+          <div 
+            class="comparison-row"
+            style={`--delay: ${index * 0.1}s`}
+            data-scroll-reveal
+          >
+            <div class="row-category">{item.category}</div>
+            <div class="row-claude">
+              <div class="score-bar">
+                <div 
+                  class="score-fill claude"
+                  style={`--score: ${item.claudeScore}%`}
+                ></div>
+              </div>
+              <span class="score-label">{item.claude}</span>
+            </div>
+            <div class="row-others">
+              <div class="score-bar">
+                <div 
+                  class="score-fill others"
+                  style={`--score: ${item.othersScore}%`}
+                ></div>
+              </div>
+              <span class="score-label">{item.others}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+    
+    <!-- Summary Cards -->
+    <div class="summary-cards">
+      <div class="summary-card" data-scroll-reveal>
+        <div class="summary-icon">🚀</div>
+        <h3>2x Faster Development</h3>
+        <p>With fewer errors and better code quality, developers ship features faster.</p>
+      </div>
+      <div class="summary-card" data-scroll-reveal style="--delay: 0.1s">
+        <div class="summary-icon">🎯</div>
+        <h3>99% First-Try Success</h3>
+        <p>Claude's code works on the first attempt more often than any competitor.</p>
+      </div>
+      <div class="summary-card" data-scroll-reveal style="--delay: 0.2s">
+        <div class="summary-icon">🧠</div>
+        <h3>Complex Problems Solved</h3>
+        <p>Handles multi-file refactors, architecture decisions, and debugging sessions.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Animate score bars when visible
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        
+        // Animate score bars
+        const bars = entry.target.querySelectorAll('.score-fill');
+        bars.forEach(bar => {
+          const el = bar as HTMLElement;
+          el.style.width = el.style.getPropertyValue('--score');
+        });
+        
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  
+  document.querySelectorAll('.comparison-row, .summary-card').forEach(el => {
+    observer.observe(el);
+  });
+</script>
+
+<style>
+  .comparison {
+    padding-block: var(--space-2xl);
+    background: var(--color-bg-elevated);
+  }
+  
+  .section-header {
+    text-align: center;
+    max-width: 700px;
+    margin-inline: auto;
+    margin-bottom: var(--space-xl);
+  }
+  
+  .section-badge {
+    display: inline-block;
+    padding: var(--space-xs) var(--space-md);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 9999px;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-primary);
+    margin-bottom: var(--space-md);
+  }
+  
+  .section-title {
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-sm);
+  }
+  
+  .section-description {
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+  }
+  
+  .comparison-wrapper {
+    max-width: 1000px;
+    margin-inline: auto;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    margin-bottom: var(--space-xl);
+  }
+  
+  .comparison-headers {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1.5fr;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+  
+  .header-badge {
+    display: inline-block;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+  }
+  
+  .header-badge.claude {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    color: white;
+  }
+  
+  .header-badge.others {
+    background: var(--color-border);
+    color: var(--color-text-muted);
+  }
+  
+  .comparison-body {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .comparison-row {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1.5fr;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--color-border);
+    align-items: center;
+    
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.5s var(--ease-smooth), 
+                transform 0.5s var(--ease-smooth);
+    transition-delay: var(--delay, 0s);
+  }
+  
+  .comparison-row:last-child {
+    border-bottom: none;
+  }
+  
+  .comparison-row.revealed {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  .row-category {
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  
+  .row-claude,
+  .row-others {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+  
+  .score-bar {
+    height: 8px;
+    background: var(--color-border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .score-fill {
+    height: 100%;
+    width: 0;
+    border-radius: 4px;
+    transition: width 1s var(--ease-smooth);
+    transition-delay: var(--delay, 0s);
+  }
+  
+  .score-fill.claude {
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  }
+  
+  .score-fill.others {
+    background: var(--color-text-subtle);
+  }
+  
+  .score-label {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+  
+  /* Summary Cards */
+  .summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-md);
+  }
+  
+  .summary-card {
+    padding: var(--space-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    text-align: center;
+    
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s var(--ease-smooth), 
+                transform 0.5s var(--ease-smooth),
+                border-color 0.3s;
+    transition-delay: var(--delay, 0s);
+  }
+  
+  .summary-card.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .summary-card:hover {
+    border-color: var(--color-primary);
+  }
+  
+  .summary-icon {
+    font-size: 3rem;
+    margin-bottom: var(--space-sm);
+  }
+  
+  .summary-card h3 {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    margin-bottom: var(--space-xs);
+  }
+  
+  .summary-card p {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+  
+  @media (max-width: 768px) {
+    .comparison-headers,
+    .comparison-row {
+      grid-template-columns: 1fr;
+      gap: var(--space-sm);
+    }
+    
+    .header-category {
+      display: none;
+    }
+    
+    .header-claude,
+    .header-others {
+      display: none;
+    }
+    
+    .row-category {
+      font-size: var(--text-lg);
+      padding-bottom: var(--space-xs);
+      border-bottom: 1px solid var(--color-border);
+    }
+    
+    .row-claude,
+    .row-others {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .row-claude::before {
+      content: 'Claude';
+      font-weight: 600;
+      color: var(--color-primary);
+    }
+    
+    .row-others::before {
+      content: 'Others';
+      font-weight: 600;
+      color: var(--color-text-subtle);
+    }
+    
+    .score-bar {
+      flex: 1;
+      margin-inline: var(--space-sm);
+    }
+  }
+</style>

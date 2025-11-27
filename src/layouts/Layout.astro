@@ -1,0 +1,247 @@
+---
+import { ViewTransitions } from 'astro:transitions';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { 
+  title = "Why I Switched to Claude", 
+  description = "A technical showcase demonstrating Claude's capabilities through cutting-edge web technologies"
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0a0a0f" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    
+    <!-- Preconnect para fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    
+    <!-- View Transitions API -->
+    <ViewTransitions />
+    
+    <!-- CSS Variables Reactivas Globales -->
+    <style is:global>
+      @layer base, components, utilities;
+      
+      @layer base {
+        :root {
+          /* Sistema de colores con oklch para mejor gradientes */
+          --color-bg: oklch(8% 0.02 270);
+          --color-bg-elevated: oklch(12% 0.02 270);
+          --color-surface: oklch(16% 0.02 270);
+          --color-border: oklch(25% 0.02 270);
+          
+          /* Claude's brand colors */
+          --color-primary: oklch(70% 0.15 35);
+          --color-primary-light: oklch(80% 0.12 35);
+          --color-accent: oklch(75% 0.18 165);
+          --color-accent-secondary: oklch(70% 0.15 290);
+          
+          --color-text: oklch(95% 0.01 270);
+          --color-text-muted: oklch(65% 0.01 270);
+          --color-text-subtle: oklch(45% 0.01 270);
+          
+          /* Tipografía fluida con clamp() */
+          --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+          --font-sans: 'Inter', system-ui, sans-serif;
+          
+          --text-xs: clamp(0.7rem, 0.65rem + 0.25vw, 0.8rem);
+          --text-sm: clamp(0.8rem, 0.75rem + 0.25vw, 0.9rem);
+          --text-base: clamp(0.95rem, 0.9rem + 0.25vw, 1.1rem);
+          --text-lg: clamp(1.1rem, 1rem + 0.5vw, 1.35rem);
+          --text-xl: clamp(1.25rem, 1.1rem + 0.75vw, 1.75rem);
+          --text-2xl: clamp(1.5rem, 1.25rem + 1.25vw, 2.5rem);
+          --text-3xl: clamp(2rem, 1.5rem + 2.5vw, 4rem);
+          --text-4xl: clamp(2.5rem, 2rem + 3vw, 6rem);
+          
+          /* Espaciado fluido */
+          --space-xs: clamp(0.25rem, 0.2rem + 0.25vw, 0.5rem);
+          --space-sm: clamp(0.5rem, 0.4rem + 0.5vw, 1rem);
+          --space-md: clamp(1rem, 0.8rem + 1vw, 2rem);
+          --space-lg: clamp(1.5rem, 1rem + 2.5vw, 4rem);
+          --space-xl: clamp(2rem, 1.5rem + 3vw, 6rem);
+          --space-2xl: clamp(3rem, 2rem + 5vw, 10rem);
+          
+          /* Bordes y radios */
+          --radius-sm: 0.375rem;
+          --radius-md: 0.75rem;
+          --radius-lg: 1.25rem;
+          --radius-xl: 2rem;
+          
+          /* Transiciones */
+          --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+          --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+          --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          
+          /* Scroll timeline para animaciones */
+          --scroll-progress: 0;
+        }
+        
+        [data-theme="light"] {
+          --color-bg: oklch(98% 0.01 270);
+          --color-bg-elevated: oklch(95% 0.01 270);
+          --color-surface: oklch(100% 0 0);
+          --color-border: oklch(85% 0.01 270);
+          --color-text: oklch(15% 0.01 270);
+          --color-text-muted: oklch(40% 0.01 270);
+          --color-text-subtle: oklch(60% 0.01 270);
+        }
+        
+        *, *::before, *::after {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+        }
+        
+        html {
+          scroll-behavior: smooth;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          text-rendering: optimizeLegibility;
+          
+          /* Scroll-driven animation timeline */
+          scroll-timeline: --page-scroll block;
+        }
+        
+        body {
+          font-family: var(--font-sans);
+          font-size: var(--text-base);
+          line-height: 1.6;
+          color: var(--color-text);
+          background: var(--color-bg);
+          min-height: 100dvh;
+          overflow-x: hidden;
+        }
+        
+        /* Selección de texto con colores de marca */
+        ::selection {
+          background: oklch(70% 0.15 35 / 0.3);
+          color: var(--color-text);
+        }
+        
+        /* Scroll-driven progress bar */
+        @supports (animation-timeline: scroll()) {
+          .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+            transform-origin: left;
+            transform: scaleX(0);
+            z-index: 9999;
+            animation: scroll-progress linear;
+            animation-timeline: scroll(root);
+          }
+          
+          @keyframes scroll-progress {
+            to { transform: scaleX(1); }
+          }
+        }
+        
+        /* Focus visible para accesibilidad */
+        :focus-visible {
+          outline: 2px solid var(--color-primary);
+          outline-offset: 3px;
+        }
+        
+        /* Smooth scroll solo si no hay preferencia de movimiento reducido */
+        @media (prefers-reduced-motion: no-preference) {
+          html {
+            scroll-behavior: smooth;
+          }
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+          }
+        }
+      }
+      
+      @layer utilities {
+        .sr-only {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          padding: 0;
+          margin: -1px;
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+          white-space: nowrap;
+          border: 0;
+        }
+        
+        .container {
+          width: 100%;
+          max-width: min(1400px, 95vw);
+          margin-inline: auto;
+          padding-inline: var(--space-md);
+        }
+        
+        .text-gradient {
+          background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 50%, var(--color-accent-secondary) 100%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+        
+        .glass {
+          background: oklch(from var(--color-bg-elevated) l c h / 0.8);
+          backdrop-filter: blur(20px) saturate(180%);
+          -webkit-backdrop-filter: blur(20px) saturate(180%);
+          border: 1px solid var(--color-border);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scroll-progress" aria-hidden="true"></div>
+    
+    <!-- Canvas para WebGL background -->
+    <canvas id="webgl-bg" aria-hidden="true"></canvas>
+    
+    <slot />
+    
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(console.error);
+        });
+      }
+    </script>
+  </body>
+</html>
+
+<style>
+  #webgl-bg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+</style>

@@ -1,0 +1,257 @@
+---
+const features = [
+  {
+    icon: 'brain',
+    title: '200K Context Window',
+    description: 'Claude can process entire codebases, books, and complex documents in a single conversation. No more context limitations.',
+    gradient: 'from-primary'
+  },
+  {
+    icon: 'code',
+    title: 'Superior Code Quality',
+    description: 'Generates clean, well-documented, production-ready code. Understands best practices and modern patterns.',
+    gradient: 'from-accent'
+  },
+  {
+    icon: 'shield',
+    title: 'Safe & Aligned',
+    description: 'Constitutional AI ensures helpful, harmless, and honest responses. Built with safety as a core principle.',
+    gradient: 'from-secondary'
+  },
+  {
+    icon: 'zap',
+    title: 'Lightning Fast',
+    description: 'Optimized for speed without sacrificing quality. Get comprehensive answers in seconds.',
+    gradient: 'from-primary'
+  },
+  {
+    icon: 'puzzle',
+    title: 'Complex Reasoning',
+    description: 'Excels at multi-step problems, mathematical proofs, and logical deduction that other AIs struggle with.',
+    gradient: 'from-accent'
+  },
+  {
+    icon: 'message',
+    title: 'Natural Conversation',
+    description: 'Maintains context naturally across long conversations. Remembers details and builds on previous discussions.',
+    gradient: 'from-secondary'
+  }
+];
+
+const icons: Record<string, string> = {
+  brain: `<path d="M12 2a8 8 0 0 0-8 8c0 3.098 1.798 5.78 4.4 7.08A10 10 0 0 1 12 22a10 10 0 0 1 3.6-4.92A8 8 0 0 0 12 2z"/><path d="M12 2v20"/>`,
+  code: `<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>`,
+  shield: `<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>`,
+  zap: `<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>`,
+  puzzle: `<path d="M19.439 7.85c-.049.322.059.648.289.878l1.568 1.568c.47.47.706 1.087.706 1.704s-.235 1.233-.706 1.704l-1.611 1.611a.98.98 0 0 1-.837.276c-.47-.07-.802-.452-.802-.907V11c0-.552-.448-1-1-1h-3c-.552 0-1-.448-1-1V6c0-.452-.332-.837-.802-.907a.98.98 0 0 1-.837.276L9.204 7.293c-.47.47-1.087.706-1.704.706s-1.233-.235-1.704-.706L4.228 5.725a.93.93 0 0 1-.289-.878C3.889 4.038 4.586 3.5 5.5 3.5c.414 0 .828.157 1.146.475l1.29 1.29c.39.39 1.024.39 1.414 0l1.79-1.79C11.61 3.006 12.273 2.75 13 2.75s1.39.256 1.86.725l1.79 1.79c.39.39 1.024.39 1.414 0l1.29-1.29c.318-.318.732-.475 1.146-.475.914 0 1.611.538 1.561 1.347z"/>`,
+  message: `<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>`
+};
+---
+
+<section class="features" id="features">
+  <div class="container">
+    <header class="section-header">
+      <span class="section-badge">Why Claude?</span>
+      <h2 class="section-title">
+        Features That <span class="text-gradient">Matter</span>
+      </h2>
+      <p class="section-description">
+        Claude isn't just another AI. It's a fundamental leap in how AI assistants 
+        understand and help with complex tasks.
+      </p>
+    </header>
+    
+    <div class="features-grid">
+      {features.map((feature, index) => (
+        <article 
+          class={`feature-card ${feature.gradient}`}
+          style={`--delay: ${index * 0.1}s`}
+          data-scroll-reveal
+        >
+          <div class="feature-icon">
+            <svg 
+              width="24" 
+              height="24" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              stroke-width="2" 
+              stroke-linecap="round" 
+              stroke-linejoin="round"
+              set:html={icons[feature.icon]}
+            />
+          </div>
+          <h3 class="feature-title">{feature.title}</h3>
+          <p class="feature-description">{feature.description}</p>
+          <div class="feature-glow" aria-hidden="true"></div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  // Intersection Observer for scroll reveal
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+  
+  document.querySelectorAll('[data-scroll-reveal]').forEach(el => {
+    observer.observe(el);
+  });
+</script>
+
+<style>
+  .features {
+    padding-block: var(--space-2xl);
+    position: relative;
+  }
+  
+  .section-header {
+    text-align: center;
+    max-width: 700px;
+    margin-inline: auto;
+    margin-bottom: var(--space-xl);
+  }
+  
+  .section-badge {
+    display: inline-block;
+    padding: var(--space-xs) var(--space-md);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 9999px;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-primary);
+    margin-bottom: var(--space-md);
+  }
+  
+  .section-title {
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-sm);
+  }
+  
+  .section-description {
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+  }
+  
+  /* CSS Grid with Subgrid for perfect alignment */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    gap: var(--space-md);
+  }
+  
+  /* Container Query for responsive cards */
+  .feature-card {
+    container-type: inline-size;
+    position: relative;
+    padding: var(--space-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    transition: all 0.4s var(--ease-smooth);
+    
+    /* Scroll reveal animation */
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s var(--ease-smooth), 
+                transform 0.6s var(--ease-smooth),
+                border-color 0.3s,
+                box-shadow 0.3s;
+    transition-delay: var(--delay, 0s);
+  }
+  
+  .feature-card.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .feature-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px oklch(0% 0 0 / 0.2);
+  }
+  
+  .feature-card.from-primary:hover { border-color: var(--color-primary); }
+  .feature-card.from-accent:hover { border-color: var(--color-accent); }
+  .feature-card.from-secondary:hover { border-color: var(--color-accent-secondary); }
+  
+  .feature-icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    border-radius: var(--radius-md);
+    color: white;
+    margin-bottom: var(--space-md);
+  }
+  
+  .from-accent .feature-icon {
+    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-secondary));
+  }
+  
+  .from-secondary .feature-icon {
+    background: linear-gradient(135deg, var(--color-accent-secondary), var(--color-primary));
+  }
+  
+  .feature-title {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    margin-bottom: var(--space-sm);
+  }
+  
+  .feature-description {
+    font-size: var(--text-base);
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+  
+  .feature-glow {
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none;
+    filter: blur(60px);
+  }
+  
+  .feature-card:hover .feature-glow {
+    opacity: 0.1;
+  }
+  
+  /* Container Query responsive adjustments */
+  @container (max-width: 280px) {
+    .feature-card {
+      padding: var(--space-md);
+    }
+    
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+    }
+    
+    .feature-title {
+      font-size: var(--text-lg);
+    }
+  }
+</style>

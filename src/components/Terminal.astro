@@ -1,0 +1,548 @@
+---
+// Interactive Terminal Web Component
+---
+
+<section class="terminal-section" id="terminal">
+  <div class="container">
+    <header class="section-header">
+      <span class="section-badge">Try It</span>
+      <h2 class="section-title">
+        Interactive <span class="text-gradient">Terminal</span>
+      </h2>
+      <p class="section-description">
+        Experience Claude's capabilities in an interactive terminal. 
+        Type commands or ask questions.
+      </p>
+    </header>
+    
+    <!-- Custom Web Component -->
+    <claude-terminal data-scroll-reveal></claude-terminal>
+  </div>
+</section>
+
+<script>
+  // Define the custom Web Component
+  class ClaudeTerminal extends HTMLElement {
+    private output: HTMLElement | null = null;
+    private input: HTMLInputElement | null = null;
+    private history: string[] = [];
+    private historyIndex: number = -1;
+    
+    constructor() {
+      super();
+      this.attachShadow({ mode: 'open' });
+    }
+    
+    connectedCallback() {
+      this.render();
+      this.setupEventListeners();
+      this.printWelcome();
+    }
+    
+    render() {
+      if (!this.shadowRoot) return;
+      
+      this.shadowRoot.innerHTML = `
+        <style>
+          :host {
+            display: block;
+            max-width: 900px;
+            margin-inline: auto;
+          }
+          
+          .terminal {
+            background: #0a0a0f;
+            border: 1px solid #2a2a3a;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+          }
+          
+          .terminal-header {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: #12121a;
+            border-bottom: 1px solid #2a2a3a;
+          }
+          
+          .dots {
+            display: flex;
+            gap: 8px;
+          }
+          
+          .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+          }
+          
+          .dot.red { background: #ff5f57; }
+          .dot.yellow { background: #febc2e; }
+          .dot.green { background: #28c840; }
+          
+          .terminal-title {
+            flex: 1;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #888;
+          }
+          
+          .terminal-body {
+            padding: 20px;
+            height: 400px;
+            overflow-y: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+          }
+          
+          .terminal-body::-webkit-scrollbar {
+            width: 8px;
+          }
+          
+          .terminal-body::-webkit-scrollbar-track {
+            background: transparent;
+          }
+          
+          .terminal-body::-webkit-scrollbar-thumb {
+            background: #3a3a4a;
+            border-radius: 4px;
+          }
+          
+          .output-line {
+            margin-bottom: 8px;
+            white-space: pre-wrap;
+            word-break: break-word;
+          }
+          
+          .output-line.command {
+            color: #50fa7b;
+          }
+          
+          .output-line.response {
+            color: #f8f8f2;
+          }
+          
+          .output-line.error {
+            color: #ff5555;
+          }
+          
+          .output-line.info {
+            color: #8be9fd;
+          }
+          
+          .output-line.system {
+            color: #bd93f9;
+          }
+          
+          .output-line.highlight {
+            color: #f1fa8c;
+          }
+          
+          .input-line {
+            display: flex;
+            align-items: center;
+            margin-top: 16px;
+          }
+          
+          .prompt {
+            color: #50fa7b;
+            margin-right: 8px;
+          }
+          
+          .prompt-symbol {
+            color: #ff79c6;
+          }
+          
+          input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #f8f8f2;
+            font-family: inherit;
+            font-size: inherit;
+            caret-color: #ff79c6;
+          }
+          
+          input::placeholder {
+            color: #44475a;
+          }
+          
+          .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 18px;
+            background: #ff79c6;
+            animation: blink 1s step-end infinite;
+          }
+          
+          @keyframes blink {
+            50% { opacity: 0; }
+          }
+          
+          .suggestions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #2a2a3a;
+          }
+          
+          .suggestion {
+            padding: 6px 12px;
+            background: #1a1a2a;
+            border: 1px solid #3a3a4a;
+            border-radius: 6px;
+            color: #8be9fd;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+          }
+          
+          .suggestion:hover {
+            background: #2a2a3a;
+            border-color: #8be9fd;
+          }
+        </style>
+        
+        <div class="terminal">
+          <div class="terminal-header">
+            <div class="dots">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+            </div>
+            <span class="terminal-title">claude@showcase ~ zsh</span>
+          </div>
+          
+          <div class="terminal-body">
+            <div class="output"></div>
+            
+            <div class="input-line">
+              <span class="prompt">claude@showcase</span>
+              <span class="prompt-symbol">❯</span>
+              <input type="text" placeholder="Type a command or question..." autofocus />
+            </div>
+            
+            <div class="suggestions">
+              <button class="suggestion">help</button>
+              <button class="suggestion">about claude</button>
+              <button class="suggestion">capabilities</button>
+              <button class="suggestion">demo code</button>
+              <button class="suggestion">compare</button>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      this.output = this.shadowRoot.querySelector('.output');
+      this.input = this.shadowRoot.querySelector('input');
+    }
+    
+    setupEventListeners() {
+      if (!this.shadowRoot || !this.input) return;
+      
+      this.input.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key === 'Enter') {
+          this.processCommand(this.input!.value);
+          this.input!.value = '';
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          this.navigateHistory(-1);
+        } else if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          this.navigateHistory(1);
+        }
+      });
+      
+      // Suggestion buttons
+      this.shadowRoot.querySelectorAll('.suggestion').forEach(btn => {
+        btn.addEventListener('click', () => {
+          this.processCommand(btn.textContent || '');
+        });
+      });
+    }
+    
+    printWelcome() {
+      this.print('╔═══════════════════════════════════════════╗', 'system');
+      this.print('║     Welcome to Claude Terminal v1.0       ║', 'system');
+      this.print('║  Type "help" for available commands       ║', 'system');
+      this.print('╚═══════════════════════════════════════════╝', 'system');
+      this.print('');
+    }
+    
+    print(text: string, type: string = 'response') {
+      if (!this.output) return;
+      const line = document.createElement('div');
+      line.className = `output-line ${type}`;
+      line.textContent = text;
+      this.output.appendChild(line);
+      this.scrollToBottom();
+    }
+    
+    scrollToBottom() {
+      const body = this.shadowRoot?.querySelector('.terminal-body');
+      if (body) body.scrollTop = body.scrollHeight;
+    }
+    
+    navigateHistory(direction: number) {
+      if (!this.input) return;
+      
+      this.historyIndex += direction;
+      this.historyIndex = Math.max(-1, Math.min(this.history.length - 1, this.historyIndex));
+      
+      if (this.historyIndex >= 0) {
+        this.input.value = this.history[this.historyIndex];
+      } else {
+        this.input.value = '';
+      }
+    }
+    
+    async processCommand(cmd: string) {
+      const command = cmd.trim().toLowerCase();
+      if (!command) return;
+      
+      this.history.unshift(command);
+      this.historyIndex = -1;
+      
+      this.print(`❯ ${command}`, 'command');
+      
+      // Simulate typing delay
+      await this.delay(300);
+      
+      switch (command) {
+        case 'help':
+          this.showHelp();
+          break;
+        case 'about claude':
+        case 'about':
+          this.showAbout();
+          break;
+        case 'capabilities':
+        case 'caps':
+          this.showCapabilities();
+          break;
+        case 'demo code':
+        case 'demo':
+          this.showDemoCode();
+          break;
+        case 'compare':
+        case 'vs':
+          this.showComparison();
+          break;
+        case 'clear':
+        case 'cls':
+          this.clearOutput();
+          break;
+        case 'contact':
+          this.showContact();
+          break;
+        default:
+          await this.handleQuestion(command);
+      }
+    }
+    
+    delay(ms: number): Promise<void> {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    
+    showHelp() {
+      this.print('');
+      this.print('Available commands:', 'info');
+      this.print('  help          - Show this help message', 'response');
+      this.print('  about         - Learn about Claude', 'response');
+      this.print('  capabilities  - See what Claude can do', 'response');
+      this.print('  demo          - Show a code demo', 'response');
+      this.print('  compare       - Claude vs other AIs', 'response');
+      this.print('  clear         - Clear the terminal', 'response');
+      this.print('  contact       - Get in touch', 'response');
+      this.print('');
+      this.print('Or just ask any question!', 'highlight');
+      this.print('');
+    }
+    
+    showAbout() {
+      this.print('');
+      this.print('🤖 About Claude', 'info');
+      this.print('');
+      this.print('Claude is an AI assistant created by Anthropic.', 'response');
+      this.print('Built with Constitutional AI for safety and helpfulness.', 'response');
+      this.print('');
+      this.print('Key features:', 'highlight');
+      this.print('  • 200K token context window', 'response');
+      this.print('  • Superior reasoning abilities', 'response');
+      this.print('  • Production-quality code generation', 'response');
+      this.print('  • Minimal hallucinations', 'response');
+      this.print('  • Natural conversation flow', 'response');
+      this.print('');
+    }
+    
+    showCapabilities() {
+      this.print('');
+      this.print('⚡ Claude Capabilities', 'info');
+      this.print('');
+      this.print('📝 Writing & Analysis', 'highlight');
+      this.print('   Long-form content, summaries, research', 'response');
+      this.print('');
+      this.print('💻 Code Generation', 'highlight');
+      this.print('   50+ languages, debugging, refactoring', 'response');
+      this.print('');
+      this.print('🧮 Math & Reasoning', 'highlight');
+      this.print('   Complex problems, proofs, logic', 'response');
+      this.print('');
+      this.print('📚 Document Processing', 'highlight');
+      this.print('   PDFs, codebases, long documents', 'response');
+      this.print('');
+    }
+    
+    showDemoCode() {
+      this.print('');
+      this.print('// Claude-generated TypeScript example', 'info');
+      this.print('');
+      this.print('async function retry<T>(', 'highlight');
+      this.print('  fn: () => Promise<T>,', 'response');
+      this.print('  maxAttempts = 3', 'response');
+      this.print('): Promise<T> {', 'highlight');
+      this.print('  for (let i = 0; i < maxAttempts; i++) {', 'response');
+      this.print('    try {', 'response');
+      this.print('      return await fn();', 'response');
+      this.print('    } catch (e) {', 'response');
+      this.print('      if (i === maxAttempts - 1) throw e;', 'response');
+      this.print('      await sleep(2 ** i * 1000);', 'response');
+      this.print('    }', 'response');
+      this.print('  }', 'response');
+      this.print('  throw new Error("Unreachable");', 'response');
+      this.print('}', 'highlight');
+      this.print('');
+    }
+    
+    showComparison() {
+      this.print('');
+      this.print('📊 Claude vs Others', 'info');
+      this.print('');
+      this.print('Context Window:', 'highlight');
+      this.print('  Claude: 200K tokens  ████████████████████ 100%', 'response');
+      this.print('  Others:  8-128K      ██████████░░░░░░░░░░  50%', 'response');
+      this.print('');
+      this.print('Code Quality:', 'highlight');
+      this.print('  Claude: Production   ███████████████████░  95%', 'response');
+      this.print('  Others: Needs fixes  ██████████████░░░░░░  70%', 'response');
+      this.print('');
+      this.print('Reasoning:', 'highlight');
+      this.print('  Claude: Excellent    ███████████████████░  98%', 'response');
+      this.print('  Others: Basic        ███████████████░░░░░  75%', 'response');
+      this.print('');
+    }
+    
+    showContact() {
+      this.print('');
+      this.print('📧 Get in Touch', 'info');
+      this.print('');
+      this.print('Website: anthropic.com', 'response');
+      this.print('Twitter: @AnthropicAI', 'response');
+      this.print('');
+    }
+    
+    clearOutput() {
+      if (this.output) this.output.innerHTML = '';
+    }
+    
+    async handleQuestion(question: string) {
+      // Simulate AI thinking
+      this.print('');
+      this.print('Thinking...', 'system');
+      await this.delay(800);
+      
+      // Remove thinking message
+      if (this.output && this.output.lastChild) {
+        this.output.removeChild(this.output.lastChild);
+      }
+      
+      // Simple response based on keywords
+      if (question.includes('hello') || question.includes('hi')) {
+        this.print('Hello! How can I help you today? Try "help" to see available commands.', 'response');
+      } else if (question.includes('who') && question.includes('you')) {
+        this.print("I'm Claude, an AI assistant by Anthropic. Type 'about' for more info!", 'response');
+      } else if (question.includes('best') || question.includes('why')) {
+        this.print('Claude excels at reasoning, code quality, and handling large contexts.', 'response');
+        this.print("Type 'compare' to see a detailed comparison!", 'info');
+      } else {
+        this.print('Interesting question! In a full implementation, Claude would provide', 'response');
+        this.print('a comprehensive, well-reasoned response here.', 'response');
+        this.print('', 'response');
+        this.print("Try 'help' to see what this demo can do!", 'info');
+      }
+      this.print('');
+    }
+  }
+  
+  // Register the custom element
+  customElements.define('claude-terminal', ClaudeTerminal);
+</script>
+
+<style>
+  .terminal-section {
+    padding-block: var(--space-2xl);
+    background: var(--color-bg-elevated);
+  }
+  
+  .section-header {
+    text-align: center;
+    max-width: 700px;
+    margin-inline: auto;
+    margin-bottom: var(--space-xl);
+  }
+  
+  .section-badge {
+    display: inline-block;
+    padding: var(--space-xs) var(--space-md);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 9999px;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-primary);
+    margin-bottom: var(--space-md);
+  }
+  
+  .section-title {
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-sm);
+  }
+  
+  .section-description {
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+  }
+  
+  [data-scroll-reveal] {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s var(--ease-smooth), transform 0.6s var(--ease-smooth);
+  }
+  
+  [data-scroll-reveal].revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+
+<script>
+  // Reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  
+  document.querySelectorAll('[data-scroll-reveal]').forEach(el => observer.observe(el));
+</script>

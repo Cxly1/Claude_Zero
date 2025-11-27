@@ -1,0 +1,27 @@
+{
+  "name": "Why I Switched to Claude",
+  "short_name": "Claude Showcase",
+  "description": "A technical showcase demonstrating Claude's capabilities through cutting-edge web technologies",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#d97706",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["technology", "developer tools"],
+  "lang": "en",
+  "dir": "ltr"
+}

@@ -1,0 +1,260 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navigation from '../components/Navigation.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="About | Why I Switched to Claude">
+  <Navigation />
+  
+  <main class="about-page">
+    <section class="about-hero">
+      <div class="container">
+        <a href="/" class="back-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          <span>Back to Home</span>
+        </a>
+        
+        <h1 class="page-title" transition:name="title">
+          About This <span class="text-gradient">Project</span>
+        </h1>
+        
+        <p class="page-description">
+          This entire website was created by Claude in a single conversation session, 
+          demonstrating the power of modern AI-assisted development.
+        </p>
+      </div>
+    </section>
+    
+    <section class="tech-stack">
+      <div class="container">
+        <h2 class="section-title">Technologies Used</h2>
+        
+        <div class="tech-grid">
+          <article class="tech-card">
+            <div class="tech-icon">🚀</div>
+            <h3>Astro</h3>
+            <p>Islands Architecture with zero JavaScript by default. Only interactive components are hydrated.</p>
+          </article>
+          
+          <article class="tech-card">
+            <div class="tech-icon">🎨</div>
+            <h3>View Transitions API</h3>
+            <p>Native browser API for smooth page transitions without JavaScript frameworks.</p>
+          </article>
+          
+          <article class="tech-card">
+            <div class="tech-icon">🧩</div>
+            <h3>Web Components</h3>
+            <p>Custom elements like the terminal that encapsulate their own styles and behavior.</p>
+          </article>
+          
+          <article class="tech-card">
+            <div class="tech-icon">🌊</div>
+            <h3>CSS Scroll-Driven</h3>
+            <p>Animations controlled by scroll position, running on the compositor thread.</p>
+          </article>
+          
+          <article class="tech-card">
+            <div class="tech-icon">🎮</div>
+            <h3>WebGL with OGL</h3>
+            <p>Lightweight shader-based background using OGL instead of Three.js.</p>
+          </article>
+          
+          <article class="tech-card">
+            <div class="tech-icon">📱</div>
+            <h3>PWA Ready</h3>
+            <p>Service Worker with stale-while-revalidate caching for offline support.</p>
+          </article>
+          
+          <article class="tech-card">
+            <div class="tech-icon">📐</div>
+            <h3>Container Queries</h3>
+            <p>Components respond to their container size, not viewport size.</p>
+          </article>
+          
+          <article class="tech-card">
+            <div class="tech-icon">🔤</div>
+            <h3>Fluid Typography</h3>
+            <p>Font sizes scale smoothly using CSS clamp() function.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+    
+    <section class="why-claude">
+      <div class="container">
+        <h2 class="section-title">Why Claude Created This</h2>
+        
+        <div class="reasons-list">
+          <div class="reason">
+            <span class="reason-number">01</span>
+            <div class="reason-content">
+              <h3>Demonstrate Capability</h3>
+              <p>Show that Claude can build production-ready, cutting-edge web applications from scratch.</p>
+            </div>
+          </div>
+          
+          <div class="reason">
+            <span class="reason-number">02</span>
+            <div class="reason-content">
+              <h3>Modern Best Practices</h3>
+              <p>Implement the latest web standards and architectural patterns without legacy overhead.</p>
+            </div>
+          </div>
+          
+          <div class="reason">
+            <span class="reason-number">03</span>
+            <div class="reason-content">
+              <h3>Zero Bundle Philosophy</h3>
+              <p>Prove that beautiful, interactive websites don't need heavy JavaScript frameworks.</p>
+            </div>
+          </div>
+          
+          <div class="reason">
+            <span class="reason-number">04</span>
+            <div class="reason-content">
+              <h3>Inspire Developers</h3>
+              <p>Show what's possible when you leverage native browser capabilities to their fullest.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <Footer />
+</Layout>
+
+<style>
+  .about-page {
+    padding-top: 100px;
+  }
+  
+  .about-hero {
+    padding-block: var(--space-xl);
+    text-align: center;
+  }
+  
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-lg);
+    transition: color 0.2s;
+  }
+  
+  .back-link:hover {
+    color: var(--color-primary);
+  }
+  
+  .page-title {
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    margin-bottom: var(--space-md);
+  }
+  
+  .page-description {
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+    max-width: 600px;
+    margin-inline: auto;
+  }
+  
+  .tech-stack,
+  .why-claude {
+    padding-block: var(--space-xl);
+  }
+  
+  .section-title {
+    font-size: var(--text-2xl);
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: var(--space-lg);
+  }
+  
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-md);
+  }
+  
+  .tech-card {
+    padding: var(--space-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  
+  .tech-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-4px);
+  }
+  
+  .tech-icon {
+    font-size: 2.5rem;
+    margin-bottom: var(--space-sm);
+  }
+  
+  .tech-card h3 {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    margin-bottom: var(--space-xs);
+  }
+  
+  .tech-card p {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+  
+  .reasons-list {
+    max-width: 800px;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+  
+  .reason {
+    display: flex;
+    gap: var(--space-lg);
+    align-items: flex-start;
+    padding: var(--space-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+  }
+  
+  .reason-number {
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    font-family: var(--font-mono);
+    color: var(--color-primary);
+    line-height: 1;
+  }
+  
+  .reason-content h3 {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    margin-bottom: var(--space-xs);
+  }
+  
+  .reason-content p {
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+  
+  @media (max-width: 600px) {
+    .reason {
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+  }
+</style>

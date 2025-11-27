@@ -1,0 +1,562 @@
+---
+// Code Demo section showcasing syntax highlighting
+const codeExamples = {
+  typescript: `// Claude generates clean, typed code
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  preferences: UserPreferences;
+}
+
+async function fetchUserWithRetry(
+  id: string, 
+  maxRetries = 3
+): Promise<User> {
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const response = await fetch(\`/api/users/\${id}\`);
+      if (!response.ok) throw new Error('Failed');
+      return await response.json();
+    } catch (error) {
+      if (attempt === maxRetries - 1) throw error;
+      await delay(Math.pow(2, attempt) * 1000);
+    }
+  }
+  throw new Error('Unreachable');
+}`,
+  python: `# Claude understands complex algorithms
+from dataclasses import dataclass
+from typing import Optional
+import asyncio
+
+@dataclass
+class CacheEntry:
+    value: any
+    expires_at: float
+    
+class AsyncLRUCache:
+    """Thread-safe async LRU cache with TTL"""
+    
+    def __init__(self, maxsize: int = 128, ttl: float = 300):
+        self.maxsize = maxsize
+        self.ttl = ttl
+        self._cache: dict[str, CacheEntry] = {}
+        self._lock = asyncio.Lock()
+    
+    async def get(self, key: str) -> Optional[any]:
+        async with self._lock:
+            if entry := self._cache.get(key):
+                if time.time() < entry.expires_at:
+                    return entry.value
+                del self._cache[key]
+        return None`,
+  rust: `// Claude excels at systems programming
+use tokio::sync::RwLock;
+use std::collections::HashMap;
+use std::sync::Arc;
+
+#[derive(Clone)]
+pub struct EventBus {
+    subscribers: Arc<RwLock<HashMap<String, Vec<Subscriber>>>>,
+}
+
+impl EventBus {
+    pub fn new() -> Self {
+        Self {
+            subscribers: Arc::new(RwLock::new(HashMap::new())),
+        }
+    }
+    
+    pub async fn publish(&self, event: &str, data: Value) {
+        let subs = self.subscribers.read().await;
+        if let Some(handlers) = subs.get(event) {
+            for handler in handlers {
+                handler.call(data.clone()).await;
+            }
+        }
+    }
+}`
+};
+
+const tabs = [
+  { id: 'typescript', label: 'TypeScript', icon: 'ts' },
+  { id: 'python', label: 'Python', icon: 'py' },
+  { id: 'rust', label: 'Rust', icon: 'rs' }
+];
+---
+
+<section class="code-demo" id="demo">
+  <div class="container">
+    <header class="section-header">
+      <span class="section-badge">Code Quality</span>
+      <h2 class="section-title">
+        Production-Ready <span class="text-gradient">Code</span>
+      </h2>
+      <p class="section-description">
+        Claude generates code that's clean, well-documented, and follows best practices.
+        This entire site was created by Claude in a single session.
+      </p>
+    </header>
+    
+    <div class="code-showcase" data-scroll-reveal>
+      <div class="code-tabs" role="tablist">
+        {tabs.map((tab, index) => (
+          <button 
+            role="tab"
+            id={`tab-${tab.id}`}
+            aria-selected={index === 0 ? 'true' : 'false'}
+            aria-controls={`panel-${tab.id}`}
+            class={`code-tab ${index === 0 ? 'active' : ''}`}
+            data-tab={tab.id}
+          >
+            <span class="tab-icon">{tab.icon}</span>
+            <span>{tab.label}</span>
+          </button>
+        ))}
+      </div>
+      
+      <div class="code-panels">
+        {Object.entries(codeExamples).map(([lang, code], index) => (
+          <div 
+            role="tabpanel"
+            id={`panel-${lang}`}
+            aria-labelledby={`tab-${lang}`}
+            class={`code-panel ${index === 0 ? 'active' : ''}`}
+            data-panel={lang}
+          >
+            <div class="code-header">
+              <div class="window-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              <span class="file-name">example.{lang === 'typescript' ? 'ts' : lang === 'python' ? 'py' : 'rs'}</span>
+              <button class="copy-btn" data-code={code} aria-label="Copy code">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
+              </button>
+            </div>
+            <pre class="code-content"><code data-lang={lang}>{code}</code></pre>
+          </div>
+        ))}
+      </div>
+      
+      <div class="code-footer">
+        <div class="typing-indicator">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="text">Claude is thinking...</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Code Stats -->
+    <div class="code-stats">
+      <div class="code-stat" data-scroll-reveal>
+        <span class="stat-number" data-count="50">0</span>
+        <span class="stat-suffix">+</span>
+        <span class="stat-label">Languages Supported</span>
+      </div>
+      <div class="code-stat" data-scroll-reveal style="--delay: 0.1s">
+        <span class="stat-number" data-count="99">0</span>
+        <span class="stat-suffix">%</span>
+        <span class="stat-label">Syntax Accuracy</span>
+      </div>
+      <div class="code-stat" data-scroll-reveal style="--delay: 0.2s">
+        <span class="stat-number" data-count="10">0</span>
+        <span class="stat-suffix">x</span>
+        <span class="stat-label">Faster Than Manual</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Tab switching
+  const tabs = document.querySelectorAll('.code-tab');
+  const panels = document.querySelectorAll('.code-panel');
+  
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const tabId = tab.getAttribute('data-tab');
+      
+      tabs.forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      
+      panels.forEach(p => p.classList.remove('active'));
+      
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+      document.querySelector(`[data-panel="${tabId}"]`)?.classList.add('active');
+    });
+  });
+  
+  // Copy functionality
+  const copyBtns = document.querySelectorAll('.copy-btn');
+  
+  copyBtns.forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const code = btn.getAttribute('data-code');
+      if (code) {
+        await navigator.clipboard.writeText(code);
+        btn.classList.add('copied');
+        setTimeout(() => btn.classList.remove('copied'), 2000);
+      }
+    });
+  });
+  
+  // Syntax highlighting with basic tokenizer
+  function highlight(code: string, lang: string): string {
+    const keywords: Record<string, string[]> = {
+      typescript: ['const', 'let', 'var', 'function', 'async', 'await', 'return', 'if', 'else', 'for', 'while', 'try', 'catch', 'throw', 'new', 'class', 'interface', 'type', 'extends', 'implements', 'import', 'export', 'from', 'default'],
+      python: ['def', 'class', 'async', 'await', 'return', 'if', 'else', 'elif', 'for', 'while', 'try', 'except', 'raise', 'with', 'as', 'from', 'import', 'yield', 'lambda', 'pass', 'break', 'continue'],
+      rust: ['fn', 'let', 'mut', 'const', 'struct', 'enum', 'impl', 'trait', 'pub', 'use', 'mod', 'self', 'Self', 'async', 'await', 'match', 'if', 'else', 'for', 'while', 'loop', 'return', 'where']
+    };
+    
+    const types: Record<string, string[]> = {
+      typescript: ['string', 'number', 'boolean', 'void', 'null', 'undefined', 'any', 'never', 'Promise', 'User', 'UserPreferences'],
+      python: ['str', 'int', 'float', 'bool', 'None', 'list', 'dict', 'tuple', 'set', 'Optional', 'any'],
+      rust: ['String', 'str', 'i32', 'u32', 'i64', 'u64', 'f32', 'f64', 'bool', 'Vec', 'Option', 'Result', 'Arc', 'HashMap', 'Value', 'RwLock']
+    };
+    
+    let result = code
+      // Escape HTML
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      // Comments
+      .replace(/(\/\/.*$|#.*$)/gm, '<span class="comment">$1</span>')
+      // Strings
+      .replace(/(`[^`]*`|'[^']*'|"[^"]*")/g, '<span class="string">$1</span>')
+      // Numbers
+      .replace(/\b(\d+)\b/g, '<span class="number">$1</span>');
+    
+    // Keywords
+    const kw = keywords[lang] || [];
+    kw.forEach(k => {
+      const regex = new RegExp(`\\b(${k})\\b`, 'g');
+      result = result.replace(regex, '<span class="keyword">$1</span>');
+    });
+    
+    // Types
+    const tp = types[lang] || [];
+    tp.forEach(t => {
+      const regex = new RegExp(`\\b(${t})\\b`, 'g');
+      result = result.replace(regex, '<span class="type">$1</span>');
+    });
+    
+    // Function names
+    result = result.replace(/(\w+)(?=\s*\()/g, '<span class="function">$1</span>');
+    
+    return result;
+  }
+  
+  // Apply highlighting
+  document.querySelectorAll('.code-content code').forEach(block => {
+    const lang = block.getAttribute('data-lang') || 'typescript';
+    const code = block.textContent || '';
+    block.innerHTML = highlight(code, lang);
+  });
+  
+  // Counter animation
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        
+        // Animate counters
+        const counter = entry.target.querySelector('.stat-number');
+        if (counter) {
+          const target = parseInt(counter.getAttribute('data-count') || '0');
+          let current = 0;
+          const increment = target / 30;
+          const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+              counter.textContent = target.toString();
+              clearInterval(timer);
+            } else {
+              counter.textContent = Math.floor(current).toString();
+            }
+          }, 50);
+        }
+        
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  
+  document.querySelectorAll('.code-stat').forEach(el => observer.observe(el));
+</script>
+
+<style>
+  .code-demo {
+    padding-block: var(--space-2xl);
+  }
+  
+  .section-header {
+    text-align: center;
+    max-width: 700px;
+    margin-inline: auto;
+    margin-bottom: var(--space-xl);
+  }
+  
+  .section-badge {
+    display: inline-block;
+    padding: var(--space-xs) var(--space-md);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 9999px;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-primary);
+    margin-bottom: var(--space-md);
+  }
+  
+  .section-title {
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-sm);
+  }
+  
+  .section-description {
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+  }
+  
+  .code-showcase {
+    max-width: 900px;
+    margin-inline: auto;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: 0 20px 60px oklch(0% 0 0 / 0.3);
+    
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s var(--ease-smooth), transform 0.6s var(--ease-smooth);
+  }
+  
+  .code-showcase.revealed,
+  [data-scroll-reveal].revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .code-tabs {
+    display: flex;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-xs);
+    gap: var(--space-xs);
+  }
+  
+  .code-tab {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-sm) var(--space-md);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-md);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s var(--ease-smooth);
+  }
+  
+  .code-tab:hover {
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+  
+  .code-tab.active {
+    background: var(--color-surface);
+    color: var(--color-primary);
+  }
+  
+  .tab-icon {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    background: var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    font-family: var(--font-mono);
+  }
+  
+  .code-tab.active .tab-icon {
+    background: var(--color-primary);
+    color: white;
+  }
+  
+  .code-panel {
+    display: none;
+  }
+  
+  .code-panel.active {
+    display: block;
+  }
+  
+  .code-header {
+    display: flex;
+    align-items: center;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--color-bg-elevated);
+    border-bottom: 1px solid var(--color-border);
+  }
+  
+  .window-dots {
+    display: flex;
+    gap: 6px;
+    margin-right: var(--space-md);
+  }
+  
+  .window-dots span {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--color-border);
+  }
+  
+  .window-dots span:nth-child(1) { background: #ff5f57; }
+  .window-dots span:nth-child(2) { background: #febc2e; }
+  .window-dots span:nth-child(3) { background: #28c840; }
+  
+  .file-name {
+    flex: 1;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+  
+  .copy-btn {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .copy-btn:hover {
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+  
+  .copy-btn.copied {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: white;
+  }
+  
+  .code-content {
+    padding: var(--space-md);
+    margin: 0;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    line-height: 1.7;
+    tab-size: 2;
+  }
+  
+  .code-content code {
+    display: block;
+    white-space: pre;
+  }
+  
+  /* Syntax highlighting colors */
+  .code-content :global(.keyword) { color: oklch(70% 0.2 290); }
+  .code-content :global(.string) { color: oklch(70% 0.15 140); }
+  .code-content :global(.number) { color: oklch(75% 0.15 50); }
+  .code-content :global(.comment) { color: var(--color-text-subtle); font-style: italic; }
+  .code-content :global(.type) { color: oklch(70% 0.15 200); }
+  .code-content :global(.function) { color: oklch(75% 0.15 80); }
+  
+  .code-footer {
+    padding: var(--space-sm) var(--space-md);
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+  }
+  
+  .typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    color: var(--color-text-subtle);
+    font-size: var(--text-sm);
+  }
+  
+  .typing-indicator .dot {
+    width: 6px;
+    height: 6px;
+    background: var(--color-primary);
+    border-radius: 50%;
+    animation: typing-bounce 1.4s infinite;
+  }
+  
+  .typing-indicator .dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-indicator .dot:nth-child(3) { animation-delay: 0.4s; }
+  
+  @keyframes typing-bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.3; }
+    30% { transform: translateY(-4px); opacity: 1; }
+  }
+  
+  /* Code Stats */
+  .code-stats {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-xl);
+    margin-top: var(--space-xl);
+    flex-wrap: wrap;
+  }
+  
+  .code-stat {
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s var(--ease-smooth), transform 0.5s var(--ease-smooth);
+    transition-delay: var(--delay, 0s);
+  }
+  
+  .code-stat.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .stat-number {
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    font-family: var(--font-mono);
+    color: var(--color-primary);
+  }
+  
+  .stat-suffix {
+    font-size: var(--text-2xl);
+    font-weight: 800;
+    color: var(--color-accent);
+  }
+  
+  .stat-label {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin-top: var(--space-xs);
+  }
+</style>

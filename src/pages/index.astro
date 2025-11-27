@@ -1,0 +1,53 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import Features from '../components/Features.astro';
+import Comparison from '../components/Comparison.astro';
+import CodeDemo from '../components/CodeDemo.astro';
+import Terminal from '../components/Terminal.astro';
+import Stats from '../components/Stats.astro';
+import Footer from '../components/Footer.astro';
+import Navigation from '../components/Navigation.astro';
+---
+
+<Layout>
+  <Navigation />
+  
+  <main>
+    <Hero />
+    <Features />
+    <Comparison />
+    <CodeDemo />
+    <Terminal />
+    <Stats />
+  </main>
+  
+  <Footer />
+</Layout>
+
+<!-- WebGL Background Shader -->
+<script>
+  import { initWebGL } from '../scripts/webgl-background';
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    const canvas = document.getElementById('webgl-bg') as HTMLCanvasElement;
+    if (canvas) {
+      initWebGL(canvas);
+    }
+  });
+  
+  // Re-initialize after View Transitions
+  document.addEventListener('astro:after-swap', () => {
+    const canvas = document.getElementById('webgl-bg') as HTMLCanvasElement;
+    if (canvas) {
+      initWebGL(canvas);
+    }
+  });
+</script>
+
+<style>
+  main {
+    position: relative;
+    z-index: 1;
+  }
+</style>

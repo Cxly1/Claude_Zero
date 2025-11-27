@@ -1,0 +1,395 @@
+---
+const stats = [
+  {
+    value: '200K',
+    label: 'Token Context',
+    description: 'Process entire codebases'
+  },
+  {
+    value: '50+',
+    label: 'Languages',
+    description: 'Programming expertise'
+  },
+  {
+    value: '99.2%',
+    label: 'Accuracy',
+    description: 'First-try success rate'
+  },
+  {
+    value: '10x',
+    label: 'Faster',
+    description: 'Development speed'
+  }
+];
+
+const testimonials = [
+  {
+    quote: "Claude completely changed how I approach complex coding problems. The context window alone is a game-changer.",
+    author: "Senior Developer",
+    role: "Tech Lead at Startup"
+  },
+  {
+    quote: "After switching from other AI assistants, I can't go back. Claude actually understands what I'm trying to build.",
+    author: "Full-Stack Engineer",
+    role: "Freelance Developer"
+  },
+  {
+    quote: "The code quality is remarkable. I spend less time debugging and more time shipping features.",
+    author: "Software Architect",
+    role: "Fortune 500 Company"
+  }
+];
+---
+
+<section class="stats" id="stats">
+  <div class="container">
+    <!-- Stats Grid with CSS Subgrid -->
+    <div class="stats-grid">
+      {stats.map((stat, index) => (
+        <div 
+          class="stat-card" 
+          data-scroll-reveal 
+          style={`--delay: ${index * 0.1}s`}
+        >
+          <span class="stat-value text-gradient">{stat.value}</span>
+          <span class="stat-label">{stat.label}</span>
+          <span class="stat-description">{stat.description}</span>
+        </div>
+      ))}
+    </div>
+    
+    <!-- Testimonials Marquee -->
+    <div class="testimonials-section">
+      <h2 class="testimonials-title">
+        What Developers <span class="text-gradient">Say</span>
+      </h2>
+      
+      <div class="testimonials-track">
+        <div class="testimonials-marquee">
+          {[...testimonials, ...testimonials].map((testimonial, index) => (
+            <blockquote class="testimonial-card">
+              <p class="testimonial-quote">"{testimonial.quote}"</p>
+              <footer class="testimonial-author">
+                <span class="author-name">{testimonial.author}</span>
+                <span class="author-role">{testimonial.role}</span>
+              </footer>
+            </blockquote>
+          ))}
+        </div>
+      </div>
+    </div>
+    
+    <!-- CTA Section -->
+    <div class="cta-section" data-scroll-reveal>
+      <div class="cta-content">
+        <h2 class="cta-title">
+          Ready to <span class="text-gradient">Switch?</span>
+        </h2>
+        <p class="cta-description">
+          Join thousands of developers who've made the switch to Claude.
+          Experience the difference today.
+        </p>
+        <div class="cta-buttons">
+          <a href="https://claude.ai" target="_blank" rel="noopener" class="btn btn-primary">
+            <span>Try Claude Free</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M7 17L17 7M17 7H7M17 7V17"/>
+            </svg>
+          </a>
+          <a href="https://anthropic.com" target="_blank" rel="noopener" class="btn btn-secondary">
+            <span>Learn More</span>
+          </a>
+        </div>
+      </div>
+      
+      <div class="cta-visual" aria-hidden="true">
+        <div class="cta-orb"></div>
+        <div class="cta-ring"></div>
+        <div class="cta-ring ring-2"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Intersection Observer for scroll reveals
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  
+  document.querySelectorAll('[data-scroll-reveal]').forEach(el => observer.observe(el));
+</script>
+
+<style>
+  .stats {
+    padding-block: var(--space-2xl);
+  }
+  
+  /* Stats Grid with Subgrid for alignment */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-md);
+    margin-bottom: var(--space-2xl);
+  }
+  
+  .stat-card {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 3;
+    gap: var(--space-xs);
+    text-align: center;
+    padding: var(--space-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.5s var(--ease-smooth), 
+                transform 0.5s var(--ease-smooth),
+                border-color 0.3s;
+    transition-delay: var(--delay, 0s);
+  }
+  
+  .stat-card.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .stat-card:hover {
+    border-color: var(--color-primary);
+  }
+  
+  .stat-value {
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    font-family: var(--font-mono);
+    line-height: 1;
+  }
+  
+  .stat-label {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--color-text);
+  }
+  
+  .stat-description {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+  
+  /* Testimonials */
+  .testimonials-section {
+    margin-bottom: var(--space-2xl);
+    overflow: hidden;
+  }
+  
+  .testimonials-title {
+    text-align: center;
+    font-size: var(--text-2xl);
+    font-weight: 800;
+    margin-bottom: var(--space-lg);
+  }
+  
+  .testimonials-track {
+    mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+  }
+  
+  .testimonials-marquee {
+    display: flex;
+    gap: var(--space-md);
+    animation: marquee 30s linear infinite;
+    width: max-content;
+  }
+  
+  .testimonials-marquee:hover {
+    animation-play-state: paused;
+  }
+  
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  
+  .testimonial-card {
+    flex-shrink: 0;
+    width: 400px;
+    padding: var(--space-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    margin: 0;
+  }
+  
+  .testimonial-quote {
+    font-size: var(--text-base);
+    color: var(--color-text);
+    line-height: 1.7;
+    margin-bottom: var(--space-md);
+  }
+  
+  .testimonial-author {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .author-name {
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  
+  .author-role {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+  
+  /* CTA Section */
+  .cta-section {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--space-xl);
+    align-items: center;
+    padding: var(--space-xl);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s var(--ease-smooth), transform 0.6s var(--ease-smooth);
+  }
+  
+  .cta-section.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .cta-title {
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    margin-bottom: var(--space-sm);
+  }
+  
+  .cta-description {
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-lg);
+    max-width: 500px;
+  }
+  
+  .cta-buttons {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+  }
+  
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-sm) var(--space-lg);
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    font-size: var(--text-base);
+    text-decoration: none;
+    transition: all 0.3s var(--ease-smooth);
+    border: none;
+    cursor: pointer;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    color: white;
+    box-shadow: 0 4px 20px oklch(70% 0.15 35 / 0.3);
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px oklch(70% 0.15 35 / 0.4);
+  }
+  
+  .btn-secondary {
+    background: var(--color-bg);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+  }
+  
+  .btn-secondary:hover {
+    border-color: var(--color-primary);
+  }
+  
+  /* CTA Visual */
+  .cta-visual {
+    position: relative;
+    width: 200px;
+    height: 200px;
+  }
+  
+  .cta-orb {
+    position: absolute;
+    inset: 20%;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    border-radius: 50%;
+    filter: blur(20px);
+    animation: pulse-orb 4s ease-in-out infinite;
+  }
+  
+  .cta-ring {
+    position: absolute;
+    inset: 0;
+    border: 2px solid var(--color-primary);
+    border-radius: 50%;
+    animation: rotate-ring 20s linear infinite;
+    opacity: 0.3;
+  }
+  
+  .ring-2 {
+    inset: 10%;
+    animation-direction: reverse;
+    animation-duration: 15s;
+    border-color: var(--color-accent);
+  }
+  
+  @keyframes pulse-orb {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; }
+  }
+  
+  @keyframes rotate-ring {
+    to { transform: rotate(360deg); }
+  }
+  
+  @media (max-width: 768px) {
+    .cta-section {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+    
+    .cta-description {
+      margin-inline: auto;
+    }
+    
+    .cta-buttons {
+      justify-content: center;
+    }
+    
+    .cta-visual {
+      display: none;
+    }
+    
+    .testimonial-card {
+      width: 320px;
+    }
+  }
+</style>
